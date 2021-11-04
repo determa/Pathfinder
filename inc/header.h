@@ -27,7 +27,10 @@ void mx_clear_list_big(b_list **list);
 int mx_atoi(const char *str);
 int get_size(char *str);
 void parser(int num, char *islands[num], int graph[num][num], char *str);
-void error_list(char *s, int num, int line);
+void dijkstra(char *names[], int num, int graph[num][num]);
+void error_file(int argc, char **argv);
+void error_list(int error_id, int line);
+void print_path(b_list *big_list);
 
 #endif
 

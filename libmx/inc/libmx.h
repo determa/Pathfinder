@@ -81,6 +81,8 @@ bool mx_isspace(char c);
 int mx_strncmp(const char *s1, const char *s2, int n);
 char *mx_strchr(const char *s, int c);
 void mx_printerr(const char *s);
+bool mx_isdigit(int c);
+bool mx_isalpha(int c);
 
 #endif
 
