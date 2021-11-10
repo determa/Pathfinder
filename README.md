@@ -1,2 +1,2 @@
 # Pathfinder
-Dijkstra's algorithm
+floyd's algorithm
