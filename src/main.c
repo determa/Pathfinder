@@ -11,15 +11,20 @@ int main(int argc, char *argv[]) {
     if (size < 0) {
         error_list(1, 1);
     }
+    
     int graph[size][size];
     char *islands[size];
 
-    //парсим и заполняем граф с островами
+    // парсим и заполняем граф с островами
     parser(size, islands, graph, str);
     
-    dijkstra(islands, size, graph);
+    // сам алгоритм + вывод
+    floyd(size, graph, islands);
 
-    mx_strdel(islands);
+    // очищаем строчные массивы
+    for (int i = 0; i < size; i++)
+        mx_strdel(&islands[i]);
+    mx_strdel(&str);
 
     return 0;
 }

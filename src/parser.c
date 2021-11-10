@@ -4,9 +4,8 @@ void parser(int num, char *islands[num], int graph[num][num], char *str) {
     int i = 0;
     int city_num = 0;
     int line = 1;
-    char *tmp = str;
     char **island;
-    char **island_tmp;
+    char **island_str;
     char *der;
     int dist = 0;
     int sum_dist = 0;
@@ -15,25 +14,33 @@ void parser(int num, char *islands[num], int graph[num][num], char *str) {
     // начальное заполнение графа и островов
     for(int i = 0; i < num; i++) {
         for(int j = 0; j < num; j++) {
-            graph[i][j] = -1;
+            if (i == j)
+                graph[i][j] = 0;
+            else
+                graph[i][j] = INT_MAX;
         }
         islands[i] = "\0";
     }
     // пропускаем строку с количеством островов
-    while (tmp[i] != '\n') {
+    while (str[i] != '\n') {
         i++;
     }
-
+    
     // сам парсинг островов и дистанций
-    while (tmp[i] != '\0') {
-        if (tmp[i - 1] == '\n' || tmp[i] == '-' || tmp[i] == ',') {
-            if (tmp[i - 1] == '\n') {
-                line++;
-                island = mx_strsplit(&tmp[i], '-');
-                island_tmp = island;
+    while (str[i] != '\0') {
+        if (str[i - 1] == '\n' || str[i] == '-' || str[i] == ',' || str[i + 1] == '\0') {
+            if (str[i + 1] == '\0') {
+                if (str[i] != '\n') {
+                    error_list(2, line);
+                }
             }
-            if (tmp[i] == '-') {
-                island = mx_strsplit(&tmp[i + 1], ',');
+            if (str[i - 1] == '\n') {
+                line++;
+                island = mx_strsplit(&str[i], '-');
+                island_str = island;
+            }
+            if (str[i] == '-') {
+                island = mx_strsplit(&str[i + 1], ',');
             }
             der = *island;
             for (int k = 0; k < mx_strlen(der); k++) {
@@ -51,10 +58,10 @@ void parser(int num, char *islands[num], int graph[num][num], char *str) {
                 islands[city_num++] = *island;
             }
             t = true;
-            if (tmp[i] == ',') {
-                if (mx_strcmp(*island, *island_tmp) == 0)
+            if (str[i] == ',') {
+                if (mx_strcmp(*island, *island_str) == 0)
                     error_list(2, line);
-                dist = mx_atoi(*mx_strsplit(&tmp[i + 1], '\n'));
+                dist = mx_atoi(*mx_strsplit(&str[i + 1], '\n'));
                 sum_dist += dist;
                 if (sum_dist < 0)
                     error_list(5, line);
@@ -62,8 +69,8 @@ void parser(int num, char *islands[num], int graph[num][num], char *str) {
                 // заполняем граф если находим 2 острова в массиве островов
                 for (int k = 0; k < num; k++) {
                     for (int j = 0; j < num; j++) {
-                        if (mx_strcmp(*island, islands[k]) == 0 && mx_strcmp(*island_tmp, islands[j]) == 0) {
-                            if (graph[k][j] != -1)
+                        if (mx_strcmp(*island, islands[k]) == 0 && mx_strcmp(*island_str, islands[j]) == 0) {
+                            if (graph[k][j] != INT_MAX)
                                 error_list(4, line);
 
                             if (dist >= 0) {
@@ -82,7 +89,5 @@ void parser(int num, char *islands[num], int graph[num][num], char *str) {
     }
     if (city_num != num)
         error_list(3, line);
-    mx_strdel(&tmp);
-    mx_strdel(&der);
 }
 
